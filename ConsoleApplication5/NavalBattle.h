@@ -6,6 +6,11 @@ using namespace std;
 
 class NavalBattle
 {
+public:
+	NavalBattle( unsigned int x = 40, unsigned int y = 20 );
+	void start();
+	~NavalBattle();
+
 private:
 	const unsigned int sizeX_;
 	const unsigned int sizeY_;
@@ -19,11 +24,4 @@ private:
 	void printBuffer();
 	void askShotTarget();
 	void aiShot();
-	
-
-public:
-	NavalBattle( unsigned int x = 40, unsigned int y = 20 );
-	void start();
-
-	~NavalBattle();
 };

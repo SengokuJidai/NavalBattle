@@ -50,7 +50,7 @@ void NavalBattle::printBuffer()
 {
 	for( int i = 0; i < (sizeX_+1)*(sizeY_+1); i++ )
 	{
-		if( i % sizeX_ )
+		if( i % sizeX_ != 0 )
 		{
 			cout<<navalBuffer_[i];
 		}
@@ -150,7 +150,7 @@ void NavalBattle::shipGen()
 	{
 		for(int k = 0; k < ships_[i].points.size(); k++)
 		{
-			if(!ships_[i].hidden)
+			if(ships_[i].hidden == false )
 				setChar(ships_[i].points[k].x, ships_[i].points[k].y, 178);
 		}
 	}
@@ -195,7 +195,7 @@ void NavalBattle::processShot( int x, int y)
 			}
 		}
 	}
-	if( hitting )
+	if( hitting == true )
 		setChar(x+3, y+3, 'X');
 	else
 		setChar(x+3, y+3, '*');
@@ -203,17 +203,17 @@ void NavalBattle::processShot( int x, int y)
 	char check;
 	for(int i = 0; i < ships_.size(); i++)
 	{
-		if(ships_[i].isSunk())
+		if(ships_[i].isSunk() == true)
 		{
 			for( int k = 0; k < ships_[i].points.size(); k++ )
 			{
 				setChar(ships_[i].points[k].x, ships_[i].points[k].y, 176);
 
 				check = getChar(ships_[i].points[k].x+1, ships_[i].points[k].y+1);
-				if( check == '.' )//'#' || check != 176 )
+				if( check == '.' )
 					setChar(ships_[i].points[k].x+1, ships_[i].points[k].y+1, '*');
 				check = getChar(ships_[i].points[k].x+1, ships_[i].points[k].y);
-				if( check == '.' )//check != '#' || check != 176 )
+				if( check == '.' )
 					setChar(ships_[i].points[k].x+1, ships_[i].points[k].y, '*');
 				check = getChar(ships_[i].points[k].x, ships_[i].points[k].y+1);
 				if( check == '.'  )
