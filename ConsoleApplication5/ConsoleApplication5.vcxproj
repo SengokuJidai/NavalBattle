@@ -78,12 +78,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NavalBattle.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="NavalBattle.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Ship.h" />

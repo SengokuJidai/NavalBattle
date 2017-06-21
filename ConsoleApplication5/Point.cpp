@@ -1,24 +1,21 @@
 #include "Point.h"
 
-Point::Point()
+Point::Point() : x(0), y(0), isHited(false)
 {
-	x = 0;
-	y = 0;
-	isHited = false;
 }
 
-bool Point::operator ==( const Point& shot )
+bool Point::operator ==( const Point& point )
 {
-	if( this->x == shot.x && this->y == shot.y )
+	if( this->x == point.x && this->y == point.y )
 		return true;
 	else
 		return false;
 }
 
-bool Point::operator !=( const Point& shot )
+bool Point::operator !=( const Point& point )
 {
-	if( this->x != shot.x || this->y != shot.y )
-		return true;
-	else
+	if( *this == point )
 		return false;
+	else
+		return true;
 }

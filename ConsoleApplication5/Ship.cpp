@@ -78,29 +78,6 @@ Ship::Ship( Point point, const unsigned int type, const bool rotation )
 	}
 }
 
-bool Ship::operator ==( const Ship& ship )
-{
-	const int shipSaveFields = 9;
-	Point saveField;
-	int compareSize = 0;
-	if( this->points.size() > ship.points.size() )
-		compareSize = ship.points.size();
-	else
-		compareSize = this->points.size();
-	for( int i = 0; i < this->points.size(); i++ )
-	{
-		for( int k = 0; k < ship.points.size(); k++ )
-		{
-			
-			if( this->points[i] == ship.points[k] )
-				return true;
-			else
-				return false;
-
-		}
-	}
-}
-
 bool Ship::isSunk()
 {
 	int counter = 0;
@@ -113,4 +90,41 @@ bool Ship::isSunk()
 		return true;
 	else
 		return false;
+}
+
+bool Ship::operator ==( const Ship& ship )
+{
+	for( int i = 0; i < this->points.size(); i++ )
+	{
+		for( int k = 0; k < ship.points.size(); k++ )
+		{
+			if( this->points[i] == ship.points[k] )
+				return true;
+			else if( this->points[i].x == ship.points[k].x+1 && this->points[i].y == ship.points[k].y+1 )
+				return true;
+			else if( this->points[i].x == ship.points[k].x-1 && this->points[i].y == ship.points[k].y-1 )
+				return true;
+			else if( this->points[i].x == ship.points[k].x+1 && this->points[i].y == ship.points[k].y-1 )
+				return true;
+			else if( this->points[i].x == ship.points[k].x-1 && this->points[i].y == ship.points[k].y+1 )
+				return true;
+			else if( this->points[i].x == ship.points[k].x-1 && this->points[i].y == ship.points[k].y )
+				return true;
+			else if( this->points[i].x == ship.points[k].x+1 && this->points[i].y == ship.points[k].y )
+				return true;
+			else if( this->points[i].x == ship.points[k].x && this->points[i].y == ship.points[k].y-1 )
+				return true;
+			else if( this->points[i].x == ship.points[k].x && this->points[i].y == ship.points[k].y+1 )
+				return true;
+		}
+	}
+	return false;
+}
+
+bool Ship::operator !=( const Ship& ship )
+{
+	if( *this == ship)
+		return false;
+	else
+		return true;
 }

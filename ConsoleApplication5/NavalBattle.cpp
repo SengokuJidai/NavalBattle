@@ -1,29 +1,10 @@
+#include <string>
 #include "NavalBattle.h"
 
-NavalBattle::NavalBattle( unsigned int x, unsigned int y ) : sizeX_(x), sizeY_(y)
-{
-	srand( time(0) );
-	HANDLE mConsole;
-	HANDLE mConsoleIn;
-	mConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
-
-	CONSOLE_CURSOR_INFO cursorInfo;
-	GetConsoleCursorInfo(mConsole, &cursorInfo);
-	cursorInfo.bVisible = FALSE;
-	cursorInfo.dwSize = 1;
-	SetConsoleCursorInfo(mConsole, &cursorInfo);
-
-	navalBuffer_ = new char[(sizeX_+1)*(sizeY_+1)];
-	for( int i = 0; i < (sizeX_+1)*(sizeY_+1); i++ )
-	{
-		navalBuffer_[i] = ' ';
-	}
-}
 
 void NavalBattle::start()
 {
-	setTable();
+	setScreenBuf();
 	printBuffer();
 	while(true)
 	{
@@ -31,37 +12,13 @@ void NavalBattle::start()
 		aiShot();
 		system("cls");
 		printBuffer();
-	}
-
-
-}
-
-void NavalBattle::setChar( unsigned int x, unsigned int y, char c)
-{
-	navalBuffer_[x + (sizeX_)*(y-1)] = c;
-}
-
-char NavalBattle::getChar( unsigned int x, unsigned int y)
-{
-	return navalBuffer_[x + (sizeX_)*(y-1)];
-}
-
-void NavalBattle::printBuffer()
-{
-	for( int i = 0; i < (sizeX_+1)*(sizeY_+1); i++ )
-	{
-		if( i % sizeX_ != 0 )
-		{
-			cout<<navalBuffer_[i];
-		}
-		else if( i != 0 )
-		{
-			cout<<navalBuffer_[i]<<endl;
-		}
+		checkForWin();
 	}
 }
 
-void NavalBattle::setTable()
+
+
+void NavalBattle::setScreenBuf()
 {
 	const int x = 3, y = 3;
 	const int tableSize = 12;
@@ -106,46 +63,72 @@ void NavalBattle::setTable()
 
 void NavalBattle::shipGen()
 {
-
-	const int nShips = 10;
+	srand( time(0) );
+	vector<Point> taboo;
+	const int nShips = 20;
 	unsigned int type = 4;
-	Point start;
-	start.x = 4;
-	start.y = 4;
 	int rotation = 0;
-	ships_.push_back(Ship(start, type, rotation ));
-	start.x = 24;
-	start.y = 4;
-	ships_.push_back(Ship(start, type, rotation ));
-	ships_[1].hidden = 1;
-	type = 3;
-	start.x = 26;
-	start.y = 10;
-	ships_.push_back(Ship(start, type, rotation ));
-	ships_[2].hidden = 1;
-
-
-	/*
+	Point start;
+	Point startEnemy;
+	
+	int tableMaxX = 13;
+	const int tableMaxY = 13;
 	for( int i = 0; i < nShips; i ++ )
 	{
-	int rotation = rand()%2;
-	start.x = 4 + rand()%10;
-	start.y = 4 + rand()%10;
-	if( i == 1 || i == 3 || i == 6 )
-	type--;
-	ships_.push_back(Ship(start, type, rotation ));
-	if( i > 0 )
-	{
-	if( ships_[i] == ships_[i-1] )
-	{
-	for( int k = 0; k < ships_[i].points.size(); k++ )
-	{
-	ships_[i].points[k].x+2;
-	}
-	}
-	}
-	}*/
+		if( i >= nShips/2 )
+		{
+			if( i == 10 )
+				type = 4;
+			start.x = 24 + rand()%30;
+			tableMaxX = 33;
+		}
+		else
+			start.x = 4 + rand()%10;
+		start.y = 4 + rand()%10;
 
+		rotation = rand()%2;
+
+		if( i == 1 || i == 3 || i == 6 || i == 11 || i == 13 || i == 16)
+			type--;
+		ships_.push_back(Ship(start, type, rotation ));
+		if( i >= nShips/2 )
+		{
+			ships_[i].hidden = true;
+		}
+		for(int k = 0; k < ships_[i].points.size(); k++)
+		{
+			while( ships_[i].points[k].x > tableMaxX )
+			{
+				for(int j = 0; j < ships_[i].points.size(); j++)
+				{
+					ships_[i].points[j].x--;
+				}
+			}
+			while( ships_[i].points[k].y > tableMaxY )
+			{
+				for(int j = 0; j < ships_[i].points.size(); j++)
+				{
+					ships_[i].points[j].y--;
+				}
+			}
+		}
+		if( i != 0 )
+		{
+			for( int k = 0; k < ships_.size()-1; k++ )
+			{
+				if( ships_[i] == ships_[k] )
+				{
+					ships_.pop_back();
+					if( i == 1 || i == 3 || i == 6 || i == 11 || i == 13 || i == 16 )
+					{
+						type++;
+					}
+					i--;
+				}
+			}
+		}
+	}
+	
 	for(int i = 0; i < ships_.size(); i++)
 	{
 		for(int k = 0; k < ships_[i].points.size(); k++)
@@ -156,13 +139,94 @@ void NavalBattle::shipGen()
 	}
 }
 
+void NavalBattle::checkForWin()
+{
+	const int nShips = 20;
+	int sunkenShipCounter = 0;
+	int sunkenEnemyShipCounter = 0;
+	for( int i = 0; i < nShips; i ++ )
+	{
+		if( ships_[i].isSunk() == true )
+		{
+			if( i < nShips/2 )
+				sunkenShipCounter++;
+			else
+				sunkenEnemyShipCounter++;
+		}
+	}
+	if( sunkenEnemyShipCounter == 10 )
+	{
+		system("cls");
+		cout<<"You win"<<endl;
+		exit(0);
+	}
+	if( sunkenShipCounter == 10 )
+	{
+		for( int i = 10; i < nShips; i ++ )
+		{
+			ships_[i].hidden = false;
+		}
+		for(int i = 0; i < ships_.size(); i++)
+		{
+			for(int k = 0; k < ships_[i].points.size(); k++)
+			{
+				if(ships_[i].hidden == false )
+					setChar(ships_[i].points[k].x, ships_[i].points[k].y, 178);
+			}
+		}
+		system("cls");
+		printBuffer();
+		//exit(0);
+	}
+}
+
 void NavalBattle::askShotTarget()
 {
 	int y = 0;
 	int x = 0;
-	cout<<endl<<"Your turn. Enter shot coordinate"<<endl;
-	cin>>x>>y;
-	cout<< x << y << endl;
+	cout<<endl<<"Your turn. Enter shot coordinate. First - Symbol coordinate, then number. Example: A2"<<endl;
+	string input;
+	cin>>input;
+	const char* a = &input[1];
+	y = atoi(a);
+	if( static_cast<int>(input[0]) > 74 )
+		x = static_cast<int>(input[0])-96;
+	else
+		x = static_cast<int>(input[0])-64;
+	while( input.size() < 2 || input.size() > 3 )
+	{
+		cout<<endl<<"Wrong input. Try again"<<endl;
+		cin>>input;
+		const char* stringNumber = &input[1];
+		y = atoi(stringNumber);
+		if( static_cast<int>(input[0]) > 74 )
+			x = static_cast<int>(input[0])-96;
+		else
+			x = static_cast<int>(input[0])-64;
+	}
+	while( y < 1 || y > 10 || x < 1 || x > 10 )
+	{
+		cout<<endl<<"Wrong input. Try again"<<endl;
+		cin>>input;
+		const char* a = &input[1];
+		y = atoi(a);
+		if( static_cast<int>(input[0]) > 74 )
+			x = static_cast<int>(input[0])-96;
+		else
+			x = static_cast<int>(input[0])-64;
+	}
+	while( static_cast<int>(input[0]) < 65 || static_cast<int>(input[0]) > 74 && static_cast<int>(input[0]) < 97 || static_cast<int>(input[0]) > 106 )
+	{
+		cout<<endl<<"Wrong input. Try again"<<endl;
+		cin>>input;
+		const char* a = &input[1];
+		y = atoi(a);
+		if( (int)input[0] > 74 )
+			x = (int)input[0]-96;
+		else
+			x = (int)input[0]-64;
+	}
+	
 	if(x > 10)
 		x = 10;
 	if(y > 10)
@@ -171,6 +235,12 @@ void NavalBattle::askShotTarget()
 		x = 1;
 	if(y < 1)
 		y = 1;
+	char sunkenShipSymbol =  static_cast<char>(176);
+	if( getChar( x+23,y+3) == '*' || getChar( x+23,y+3) == 'X' || getChar( x+23,y+3) == sunkenShipSymbol )
+	{
+		cout<<"Already shooted"<<endl;
+		system("pause");
+	}
 	processShot( x+20, y );
 }
 
@@ -178,7 +248,21 @@ void NavalBattle::aiShot()
 {
 	int x = 1 + rand()%10;
 	int y = 1 + rand()%10;
-	processShot( x, y );
+	if(x > 10)
+		x = 10;
+	if(y > 10)
+		y = 10;
+	if(x < 1)
+		x = 1;
+	if(y < 1)
+		y = 1;
+	char a =  static_cast<char>(178);
+	if( getChar( x+3,y+3) == a || getChar( x+3,y+3) == '.' )
+		processShot( x, y ); 
+	else
+	{
+		aiShot(); // Вечный цикл если боту некуда больше стрелять. Переделать.
+	}
 }
 
 void NavalBattle::processShot( int x, int y)
@@ -238,7 +322,3 @@ void NavalBattle::processShot( int x, int y)
 	}
 }
 
-NavalBattle::~NavalBattle()
-{
-	delete[] navalBuffer_;
-}

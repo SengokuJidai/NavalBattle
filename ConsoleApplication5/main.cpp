@@ -2,6 +2,6 @@
 
 void main()
 {
-	NavalBattle naval( 40, 20 );
+	NavalBattle naval;
 	naval.start();
 }
