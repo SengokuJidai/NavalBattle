@@ -1,22 +1,21 @@
 #include <string>
 #include "NavalBattle.h"
 
-void NavalBattle::start()
+NavalBattle::NavalBattle()
 {
-	setScreenBuf();
-	checkForWin();
+	setStartBuf();
 	printBuffer();
-	while(true)
-	{
-		askShotTarget();
-		aiShot();
-		system("cls");
-		checkForWin();
-		printBuffer();
-	}
 }
 
-void NavalBattle::setScreenBuf()
+void NavalBattle::cycledScreen()
+{
+	checkForWin();
+	askShotTarget();
+	aiShot();
+	printBuffer();
+}
+
+void NavalBattle::setStartBuf()
 {
 	const int x = 3, y = 3;
 	const int tableSize = 12;

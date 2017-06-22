@@ -31,8 +31,17 @@ char BaseAplication::getChar( unsigned int x, unsigned int y)
 	return screenBuffer_[x + (sizeX_)*(y-1)];
 }
 
+void BaseAplication::start()
+{
+	while(true)
+	{
+		cycledScreen();
+	}
+}
+
 void BaseAplication::printBuffer()
 {
+	system("cls");
 	for( int i = 0; i < (sizeX_+1)*(sizeY_+1); i++ )
 	{
 		if( i % sizeX_ != 0 )
@@ -44,6 +53,7 @@ void BaseAplication::printBuffer()
 			cout<<screenBuffer_[i]<<endl;
 		}
 	}
+	cout<<endl;
 }
 
 BaseAplication::~BaseAplication()

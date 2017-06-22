@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Point.h"
 
 class Ship
