@@ -6,6 +6,6 @@ struct Point
 	unsigned int y;
 	bool isHited;
 	Point();
-	bool operator ==( const Point& shot );
-	bool operator !=( const Point& shot );
+	bool operator ==( const Point& point );
+	bool operator !=( const Point& point );
 };
