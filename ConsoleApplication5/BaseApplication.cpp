@@ -2,6 +2,7 @@
 
 BaseAplication::BaseAplication( const unsigned int x, const unsigned int y ) : sizeX_(x), sizeY_(y)
 {
+	/*
 	HANDLE mConsole;
 	HANDLE mConsoleIn;
 	mConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -11,7 +12,7 @@ BaseAplication::BaseAplication( const unsigned int x, const unsigned int y ) : s
 	GetConsoleCursorInfo(mConsole, &cursorInfo);
 	cursorInfo.bVisible = FALSE;
 	cursorInfo.dwSize = 1;
-	SetConsoleCursorInfo(mConsole, &cursorInfo);
+	SetConsoleCursorInfo(mConsole, &cursorInfo);*/
 
 	screenBuffer_ = new char[(sizeX_+1)*(sizeY_+1)];
 	for( int i = 0; i < (sizeX_+1)*(sizeY_+1); i++ )

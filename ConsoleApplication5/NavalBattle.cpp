@@ -1,22 +1,20 @@
 #include <string>
 #include "NavalBattle.h"
 
-
 void NavalBattle::start()
 {
 	setScreenBuf();
+	checkForWin();
 	printBuffer();
 	while(true)
 	{
 		askShotTarget();
 		aiShot();
 		system("cls");
-		printBuffer();
 		checkForWin();
+		printBuffer();
 	}
 }
-
-
 
 void NavalBattle::setScreenBuf()
 {
@@ -154,6 +152,9 @@ void NavalBattle::checkForWin()
 				sunkenEnemyShipCounter++;
 		}
 	}
+	cout<<"Ships: "<< nShips/2 - sunkenShipCounter<<endl;
+	cout<<"Enemy ships: "<<nShips/2 - sunkenEnemyShipCounter<<endl;
+
 	if( sunkenEnemyShipCounter == 10 )
 	{
 		system("cls");
@@ -174,9 +175,7 @@ void NavalBattle::checkForWin()
 					setChar(ships_[i].points[k].x, ships_[i].points[k].y, 178);
 			}
 		}
-		system("cls");
-		printBuffer();
-		//exit(0);
+		exit(0);
 	}
 }
 
@@ -261,7 +260,7 @@ void NavalBattle::aiShot()
 		processShot( x, y ); 
 	else
 	{
-		aiShot(); // Вечный цикл если боту некуда больше стрелять. Переделать.
+		aiShot(); // exit(0) in checkForWin() end infinite cycle
 	}
 }
 
